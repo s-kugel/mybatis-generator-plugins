@@ -12,11 +12,7 @@ import lombok.SneakyThrows;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.Parameter;
-import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.java.*;
 
 public class VersionColumnPlugin extends PluginAdapter {
 
@@ -158,6 +154,7 @@ public class VersionColumnPlugin extends PluginAdapter {
 
     method.setDefault(false);
     method.setAbstract(false);
+    method.setVisibility(JavaVisibility.PUBLIC);
     method.addParameter(new Parameter(baseRecordType, "row"));
     method.setReturnType(new FullyQualifiedJavaType("java.lang.String"));
 
