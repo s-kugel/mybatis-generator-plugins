@@ -17,9 +17,7 @@
     <plugin type="org.mybatis.generator.plugins.LombokPlugin" />
     <plugin type="org.mybatis.generator.plugins.SelectiveSQLPlugin" />
     <plugin type="org.mybatis.generator.plugins.VersionColumnPlugin" />
-    <!-- <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin" /> -->
-    <!-- <plugin type="org.mybatis.generator.plugins.ToStringPlugin" /> -->
-    <!-- <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" /> -->
+    <plugin type="org.mybatis.generator.plugins.TruncateSQLPlugin" />
     <commentGenerator>
       <property
         name="suppressDate"

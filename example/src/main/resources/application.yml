@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    pool-name: duffy-connection-pool
+    maximum-pool-size: 10
+    minimum-idle: 10
+    idle-timout: 600000 # 10min
+    connection-timeout: 20000 # 20sec
+    leak-connection-threshold: 10000
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    db-name: ${DB_NAME}
+    url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.db-name}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30

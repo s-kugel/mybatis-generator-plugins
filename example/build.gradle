@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 buildscript {
     dependencies {
         classpath('org.flywaydb:flyway-mysql:9.16.3')
@@ -8,6 +10,7 @@ plugins {
     id('java')
     id('com.diffplug.spotless').version('6.13.0')
     id('org.flywaydb.flyway').version('9.16.3')
+    id('org.springframework.boot').version('3.0.5')
 }
 
 configurations {
@@ -18,6 +21,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web:3.0.5')
     implementation('org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1')
     implementation('com.mysql:mysql-connector-j:8.0.32')
+    implementation('de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0')
     compileOnly('org.projectlombok:lombok:1.18.26')
     annotationProcessor('org.projectlombok:lombok:1.18.26')
 
@@ -36,6 +40,29 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding('UTF-8')
+}
+
+bootRun {
+    doFirst {
+        file("${rootDir}/.envrc").readLines().each {
+            def (key, value) = it.split(" ")[1].tokenize("=")
+            environment(key, value)
+        }
+    }
+}
+
+test {
+    testLogging {
+        events('SKIPPED', 'PASSED', 'FAILED', 'STANDARD_ERROR')
+        exceptionFormat(TestExceptionFormat.FULL)
+    }
+    useJUnitPlatform()
+    doFirst {
+        file("${rootDir}/.envrc").readLines().each {
+            def (key, value) = it.split(" ")[1].tokenize("=")
+            environment(key, value)
+        }
+    }
 }
 
 spotless {
