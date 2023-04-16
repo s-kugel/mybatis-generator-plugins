@@ -1,0 +1,115 @@
+buildscript {
+    dependencies {
+        classpath('org.flywaydb:flyway-mysql:9.16.3')
+    }
+}
+
+plugins {
+    id('java')
+    id('com.diffplug.spotless').version('6.13.0')
+    id('org.flywaydb.flyway').version('9.16.3')
+}
+
+configurations {
+    mbGenerate
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web:3.0.5')
+    implementation('org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1')
+    implementation('com.mysql:mysql-connector-j:8.0.32')
+    compileOnly('org.projectlombok:lombok:1.18.26')
+    annotationProcessor('org.projectlombok:lombok:1.18.26')
+
+    testCompileOnly('org.projectlombok:lombok:1.18.26')
+    testAnnotationProcessor('org.projectlombok:lombok:1.18.26')
+    testImplementation('org.springframework.boot:spring-boot-starter-test:3.0.5')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.9.2')
+    testImplementation('org.junit.jupiter:junit-jupiter-engine:5.9.2')
+    testImplementation('com.github.database-rider:rider-junit5:1.36.0')
+    testImplementation('com.github.database-rider:rider-spring:1.36.0')
+
+    mbGenerate('com.mysql:mysql-connector-j:8.0.32')
+    mbGenerate('org.mybatis.generator:mybatis-generator-core:1.4.2')
+    mbGenerate(project(':generator'))
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding('UTF-8')
+}
+
+spotless {
+    encoding('UTF-8')
+    java {
+        targetExclude(
+            'build/mybatis/gen-src/main/java/**'
+        )
+        indentWithSpaces()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        googleJavaFormat()
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                'src/main/java',
+                "${buildDir}/mybatis/gen-src/main/java"
+            ]
+        }
+    }
+}
+
+def dbHost = System.getenv('DB_HOST')
+def dbPort = System.getenv('DB_PORT')
+def dbName = System.getenv('DB_NAME')
+def dbUser = System.getenv('DB_USER')
+def dbPassword = System.getenv('DB_PASSWORD')
+
+flyway {
+    url = "jdbc:mysql://${dbHost}:${dbPort}/${dbName}"
+    user = "${dbUser}"
+    password = "${dbPassword}"
+    cleanDisabled = false
+    locations = [
+        "filesystem:${projectDir}/migrations"
+    ]
+}
+
+tasks.register('mbClean', Delete) {
+    delete("${buildDir}/mybatis")
+    followSymlinks(true)
+}
+
+tasks.register('mbGenerate') {
+    it.dependsOn(mbClean, ':generator:build')
+
+    doFirst {
+        mkdir("${buildDir}/mybatis/gen-src/main/java")
+    }
+
+    doLast {
+        ant.properties['driverClassName'] = 'com.mysql.cj.jdbc.Driver'
+        ant.properties['url'] = "jdbc:mysql://${dbHost}:${dbPort}/${dbName}".toString()
+        ant.properties['username'] = "${dbUser}".toString()
+        ant.properties['password'] = "${dbPassword}".toString()
+        ant.properties['targetProject'] = "${buildDir.path}/mybatis/gen-src/main/java".toString()
+        ant.properties['targetEntityPackage'] = 'org.mybatis.generator.example.domain.entity'
+        ant.properties['targetMapperPackage'] = 'org.mybatis.generator.example.domain.repository'
+        ant.taskdef(name: 'mbGenerator', classname: 'org.mybatis.generator.ant.GeneratorAntTask', classpath: configurations.mbGenerate.asPath)
+        ant.mbGenerator(overwrite: true, configFile: "${projectDir.path}/config/generator-config.xml", verbose: true) {
+            propertyset {
+                propertyref(name: 'driverClassName')
+                propertyref(name: 'url')
+                propertyref(name: 'username')
+                propertyref(name: 'password')
+                propertyref(name: 'targetProject')
+                propertyref(name: 'targetEntityPackage')
+                propertyref(name: 'targetMapperPackage')
+            }
+        }
+    }
+}

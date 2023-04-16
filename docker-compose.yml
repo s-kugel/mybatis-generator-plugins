@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  generator-db:
+    container_name: generator-db
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: 'Asia/Tokyo'
+    ports:
+      - '${DB_PORT}:3306'
+    networks:
+      - mybatis-generator
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u ${DB_USER} -p${DB_PASSWORD}
+
+volumes:
+  generator-db-data:
+    name: generator-db-data
+    driver: local
+
+networks:
+  mybatis-generator:
+    name: mybatis-generator
