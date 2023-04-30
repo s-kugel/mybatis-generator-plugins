@@ -7,7 +7,6 @@ import de.huxhorn.sulky.ulid.ULID;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +33,7 @@ public class UserMapperTest {
     userMapper.truncate();
 
     // insert test data
+    List<User> rows = new ArrayList<>();
     for (var i = 0; i < 10; i++) {
       var user =
           new User()
@@ -43,8 +43,10 @@ public class UserMapperTest {
               .setCreatedAt(LocalDateTime.now())
               .setCreatedBy("initial")
               .setVersion(0);
-      userMapper.insert(user);
+      rows.add(user);
     }
+
+    userMapper.bulkInsert(rows);
   }
 
   @Test
