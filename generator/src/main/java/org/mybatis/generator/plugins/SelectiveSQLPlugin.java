@@ -14,9 +14,7 @@ public class SelectiveSQLPlugin extends PluginAdapter {
   }
 
   @Override
-  public boolean clientGenerated(
-      Interface interfaze, //
-      IntrospectedTable introspectedTable) {
+  public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
     var baseRecordType = PluginUtils.baseRecordType(introspectedTable);
     var sqlProvider = PluginUtils.sqlProviderType(introspectedTable);
 

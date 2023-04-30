@@ -26,9 +26,7 @@ public class VersionColumnPlugin extends PluginAdapter {
   }
 
   @Override
-  public boolean clientGenerated(
-      Interface interfaze, //
-      IntrospectedTable introspectedTable) {
+  public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
     if (!hasVersionColumn(introspectedTable)) {
       return true;
     }

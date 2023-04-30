@@ -15,9 +15,7 @@ public class SelectAllPlugin extends PluginAdapter {
   }
 
   @Override
-  public boolean clientGenerated(
-      Interface interfaze, //
-      IntrospectedTable introspectedTable) {
+  public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
     var tableName = PluginUtils.tableName(introspectedTable);
 
     {
