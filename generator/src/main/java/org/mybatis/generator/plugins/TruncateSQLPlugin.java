@@ -3,7 +3,6 @@ package org.mybatis.generator.plugins;
 import java.util.List;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 
@@ -16,18 +15,17 @@ public class TruncateSQLPlugin extends PluginAdapter {
 
   @Override
   public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
-    var tableName = introspectedTable.getTableConfiguration().getTableName();
+    var tableName = PluginUtils.tableName(introspectedTable);
 
-    var truncate = new Method("truncate");
-    truncate.setAbstract(true);
-    truncate.setDefault(false);
-    truncate.addAnnotation("@Delete(\"TRUNCATE TABLE %s\")".formatted(tableName));
-    truncate.setReturnType(new FullyQualifiedJavaType("int"));
+    var method = new Method("truncate");
+    method.setAbstract(true);
+    method.setDefault(false);
+    method.addAnnotation("@Delete(\"TRUNCATE TABLE %s\")".formatted(tableName));
+    method.setReturnType(PluginUtils.INT);
 
-    interfaze.addMethod(truncate);
+    interfaze.addMethod(method);
 
-    var deleteAnnotation = new FullyQualifiedJavaType("org.apache.ibatis.annotations.Delete");
-    interfaze.addImportedType(deleteAnnotation);
+    interfaze.addImportedType(PluginUtils.DELETE_ANNOTATION);
 
     return true;
   }

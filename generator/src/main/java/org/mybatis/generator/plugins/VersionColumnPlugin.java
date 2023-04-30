@@ -1,14 +1,10 @@
 package org.mybatis.generator.plugins;
 
-import freemarker.template.Configuration;
-import java.io.StringWriter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import lombok.SneakyThrows;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -17,14 +13,6 @@ import org.mybatis.generator.api.dom.java.*;
 public class VersionColumnPlugin extends PluginAdapter {
 
   private String versionColumnName;
-
-  private final Configuration configuration;
-
-  public VersionColumnPlugin() {
-    var configuration = new Configuration(Configuration.VERSION_2_3_32);
-    configuration.setClassForTemplateLoading(getClass(), "/templates");
-    this.configuration = configuration;
-  }
 
   @Override
   public void setProperties(Properties properties) {
@@ -45,54 +33,45 @@ public class VersionColumnPlugin extends PluginAdapter {
       return true;
     }
 
-    var baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
-    var sqlProvider =
-        new FullyQualifiedJavaType(introspectedTable.getTableConfiguration().getSqlProviderName());
+    var baseRecordType = PluginUtils.baseRecordType(introspectedTable);
+    var sqlProvider = PluginUtils.sqlProviderType(introspectedTable);
 
-    var updateProvider = new FullyQualifiedJavaType("org.apache.ibatis.annotations.UpdateProvider");
-    interfaze.addImportedType(updateProvider);
+    {
+      var method = new Method("updateByPrimaryKeyAndVersion");
+      method.setDefault(false);
+      method.setAbstract(true);
+      method.addParameter(new Parameter(baseRecordType, "row"));
+      method.addAnnotation(
+          "@%s(type=%s.class, method=\"%s\")"
+              .formatted(
+                  PluginUtils.UPDATE_PROVIDER.getShortName(),
+                  sqlProvider.getShortName(),
+                  "updateByPrimaryKeyAndVersion"));
+      method.setReturnType(PluginUtils.INT);
 
-    var updateByPrimaryKeyAndVersion =
-        generateClientMethod(
-            "updateByPrimaryKeyAndVersion",
-            updateProvider,
-            sqlProvider,
-            baseRecordType,
-            new FullyQualifiedJavaType("int"));
-    interfaze.addMethod(updateByPrimaryKeyAndVersion);
+      interfaze.addMethod(method);
+    }
 
-    var deleteProvider = new FullyQualifiedJavaType("org.apache.ibatis.annotations.DeleteProvider");
-    interfaze.addImportedType(deleteProvider);
+    {
+      var method = new Method("deleteByPrimaryKeyAndVersion");
+      method.setDefault(false);
+      method.setAbstract(true);
+      method.addParameter(new Parameter(baseRecordType, "row"));
+      method.addAnnotation(
+          "@%s(type=%s.class, method=\"%s\")"
+              .formatted(
+                  PluginUtils.DELETE_PROVIDER.getShortName(),
+                  sqlProvider.getShortName(),
+                  "deleteByPrimaryKeyAndVersion"));
+      method.setReturnType(PluginUtils.INT);
 
-    var deleteByPrimaryKeyAndVersion =
-        generateClientMethod(
-            "deleteByPrimaryKeyAndVersion",
-            deleteProvider,
-            sqlProvider,
-            baseRecordType,
-            new FullyQualifiedJavaType("int"));
-    interfaze.addMethod(deleteByPrimaryKeyAndVersion);
+      interfaze.addMethod(method);
+    }
+
+    interfaze.addImportedType(PluginUtils.UPDATE_PROVIDER);
+    interfaze.addImportedType(PluginUtils.DELETE_PROVIDER);
 
     return true;
-  }
-
-  private Method generateClientMethod(
-      String methodName,
-      FullyQualifiedJavaType annotation,
-      FullyQualifiedJavaType providerType,
-      FullyQualifiedJavaType baseRecordType,
-      FullyQualifiedJavaType returnType) {
-    var method = new Method(methodName);
-
-    method.setDefault(false);
-    method.setAbstract(true);
-    method.addParameter(new Parameter(baseRecordType, "row"));
-    method.addAnnotation(
-        "@%s(type=%s.class, method=\"%s\")"
-            .formatted(annotation.getShortName(), providerType.getShortName(), methodName));
-    method.setReturnType(returnType);
-
-    return method;
   }
 
   @Override
@@ -103,10 +82,8 @@ public class VersionColumnPlugin extends PluginAdapter {
       return true;
     }
 
-    topLevelClass.addImportedType(new FullyQualifiedJavaType("java.util.Objects"));
-
-    var tableName = introspectedTable.getTableConfiguration().getTableName();
-    var baseRecordType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+    var tableName = PluginUtils.tableName(introspectedTable);
+    var baseRecordType = PluginUtils.baseRecordType(introspectedTable);
     var primaryKeys = introspectedTable.getPrimaryKeyColumns().stream().map(RowParam::of).toList();
     var rows =
         introspectedTable.getAllColumns().stream()
@@ -124,50 +101,35 @@ public class VersionColumnPlugin extends PluginAdapter {
         Map.of(
             "tableName", tableName, "primaryKeys", primaryKeys, "rows", rows, "version", version);
 
-    try {
-      var updateByPrimaryKeyAndVersion =
-          generateProviderMethod(
-              "updateByPrimaryKeyAndVersion", //
-              baseRecordType, //
-              templateParam);
-      topLevelClass.addMethod(updateByPrimaryKeyAndVersion);
+    {
+      var method = new Method("updateByPrimaryKeyAndVersion");
+      method.setDefault(false);
+      method.setAbstract(false);
+      method.setVisibility(JavaVisibility.PUBLIC);
+      method.addParameter(new Parameter(baseRecordType, "row"));
+      method.setReturnType(PluginUtils.STRING);
+      method.addBodyLine(
+          PluginUtils.processTemplate("updateByPrimaryKeyAndVersion", templateParam));
 
-      var deleteByPrimaryKeyAndVersion =
-          generateProviderMethod(
-              "deleteByPrimaryKeyAndVersion", //
-              baseRecordType, //
-              templateParam);
-      topLevelClass.addMethod(deleteByPrimaryKeyAndVersion);
-    } catch (Exception e) {
-      return true;
+      topLevelClass.addMethod(method);
     }
+
+    {
+      var method = new Method("deleteByPrimaryKeyAndVersion");
+      method.setDefault(false);
+      method.setAbstract(false);
+      method.setVisibility(JavaVisibility.PUBLIC);
+      method.addParameter(new Parameter(baseRecordType, "row"));
+      method.setReturnType(PluginUtils.STRING);
+      method.addBodyLine(
+          PluginUtils.processTemplate("deleteByPrimaryKeyAndVersion", templateParam));
+
+      topLevelClass.addMethod(method);
+    }
+
+    topLevelClass.addImportedType(PluginUtils.OBJECTS);
 
     return true;
-  }
-
-  @SneakyThrows
-  private Method generateProviderMethod(
-      String methodName, //
-      FullyQualifiedJavaType baseRecordType, //
-      Map<String, Object> templateParam) {
-    var method = new Method(methodName);
-
-    method.setDefault(false);
-    method.setAbstract(false);
-    method.setVisibility(JavaVisibility.PUBLIC);
-    method.addParameter(new Parameter(baseRecordType, "row"));
-    method.setReturnType(new FullyQualifiedJavaType("java.lang.String"));
-
-    try (var writer = new StringWriter()) {
-      var template = configuration.getTemplate(methodName + ".ftl", Locale.JAPAN, "UTF-8");
-      var environment = template.createProcessingEnvironment(templateParam, writer);
-      environment.setOutputEncoding("UTF-8");
-      environment.process();
-
-      method.addBodyLine(writer.toString());
-    }
-
-    return method;
   }
 
   private boolean hasVersionColumn(IntrospectedTable introspectedTable) {
