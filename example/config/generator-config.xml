@@ -18,6 +18,7 @@
     <plugin type="org.mybatis.generator.plugins.SelectiveSQLPlugin" />
     <plugin type="org.mybatis.generator.plugins.VersionColumnPlugin" />
     <plugin type="org.mybatis.generator.plugins.TruncateSQLPlugin" />
+    <plugin type="org.mybatis.generator.plugins.SelectAllPlugin" />
     <commentGenerator>
       <property
         name="suppressDate"

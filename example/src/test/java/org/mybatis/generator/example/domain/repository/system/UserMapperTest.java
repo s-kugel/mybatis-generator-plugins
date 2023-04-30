@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.huxhorn.sulky.ulid.ULID;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mybatis.generator.example.ServerConfiguration;
 import org.mybatis.generator.example.domain.entity.system.gen.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(
     classes = ServerConfiguration.class,
@@ -41,6 +45,24 @@ public class UserMapperTest {
               .setVersion(0);
       userMapper.insert(user);
     }
+  }
+
+  @Test
+  public void testSelectAll() {
+    var users = userMapper.selectAll();
+
+    assertEquals(10, users.size());
+  }
+
+  @Transactional
+  @Test
+  public void testSelectAllWithCursor() throws Exception {
+    List<User> users = new ArrayList<>();
+    try (var cursor = userMapper.selectAllWithCursor()) {
+      cursor.forEach(users::add);
+    }
+
+    assertEquals(10, users.size());
   }
 
   @Test
