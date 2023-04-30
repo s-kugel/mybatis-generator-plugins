@@ -4,7 +4,7 @@ SQL sql = new SQL();
 
 <#list rows as row>
         if (row.get${row.javaProperty?cap_first}() != null) {
-            sql.WHERE("${row.columnName} = <#noparse>#</#noparse>{row.${row.javaProperty}, jdbcType=${row.jdbcType}");
+            sql.WHERE("${row.columnName} = <#noparse>#</#noparse>{${row.javaProperty}, jdbcType=${row.jdbcType}}");
         }
 </#list>
 
