@@ -1,14 +1,14 @@
 plugins {
     id('java')
-    id('com.diffplug.spotless').version('6.13.0')
+    id('com.diffplug.spotless').version('6.20.0')
 }
 
 version("0.0.1")
 
 dependencies {
     implementation('org.freemarker:freemarker:2.3.32')
-    compileOnly('org.projectlombok:lombok:1.18.26')
-    annotationProcessor('org.projectlombok:lombok:1.18.26')
+    compileOnly('org.projectlombok:lombok:1.18.28')
+    annotationProcessor('org.projectlombok:lombok:1.18.28')
     implementation('org.mybatis.generator:mybatis-generator-core:1.4.2')
 }
 

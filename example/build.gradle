@@ -8,9 +8,9 @@ buildscript {
 
 plugins {
     id('java')
-    id('com.diffplug.spotless').version('6.13.0')
+    id('com.diffplug.spotless').version('6.20.0')
     id('org.flywaydb.flyway').version('9.16.3')
-    id('org.springframework.boot').version('3.0.5')
+    id('org.springframework.boot').version('3.1.2')
 }
 
 configurations {
@@ -18,16 +18,16 @@ configurations {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web:3.0.5')
-    implementation('org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1')
+    implementation('org.springframework.boot:spring-boot-starter-web:3.1.2')
+    implementation('org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2')
     implementation('com.mysql:mysql-connector-j:8.0.32')
     implementation('de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0')
-    compileOnly('org.projectlombok:lombok:1.18.26')
-    annotationProcessor('org.projectlombok:lombok:1.18.26')
+    compileOnly('org.projectlombok:lombok:1.18.28')
+    annotationProcessor('org.projectlombok:lombok:1.18.28')
 
-    testCompileOnly('org.projectlombok:lombok:1.18.26')
-    testAnnotationProcessor('org.projectlombok:lombok:1.18.26')
-    testImplementation('org.springframework.boot:spring-boot-starter-test:3.0.5')
+    testCompileOnly('org.projectlombok:lombok:1.18.28')
+    testAnnotationProcessor('org.projectlombok:lombok:1.18.28')
+    testImplementation('org.springframework.boot:spring-boot-starter-test:3.1.2')
     testImplementation('org.junit.jupiter:junit-jupiter-api:5.9.2')
     testImplementation('org.junit.jupiter:junit-jupiter-engine:5.9.2')
     testImplementation('com.github.database-rider:rider-junit5:1.36.0')
