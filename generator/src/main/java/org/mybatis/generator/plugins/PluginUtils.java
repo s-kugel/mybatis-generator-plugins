@@ -48,7 +48,8 @@ public final class PluginUtils {
   public static final FullyQualifiedJavaType STRING =
       new FullyQualifiedJavaType("java.lang.String");
 
-  public static final FullyQualifiedJavaType INT = new FullyQualifiedJavaType("int");
+  public static final FullyQualifiedJavaType INTEGER =
+      new FullyQualifiedJavaType("java.lang.Integer");
 
   public static String tableName(IntrospectedTable table) {
     return table.getTableConfiguration().getTableName();

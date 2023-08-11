@@ -45,7 +45,7 @@ public class VersionColumnPlugin extends PluginAdapter {
                   PluginUtils.UPDATE_PROVIDER.getShortName(),
                   sqlProvider.getShortName(),
                   "updateByPrimaryKeyAndVersion"));
-      method.setReturnType(PluginUtils.INT);
+      method.setReturnType(PluginUtils.INTEGER);
 
       interfaze.addMethod(method);
     }
@@ -61,7 +61,7 @@ public class VersionColumnPlugin extends PluginAdapter {
                   PluginUtils.DELETE_PROVIDER.getShortName(),
                   sqlProvider.getShortName(),
                   "deleteByPrimaryKeyAndVersion"));
-      method.setReturnType(PluginUtils.INT);
+      method.setReturnType(PluginUtils.INTEGER);
 
       interfaze.addMethod(method);
     }

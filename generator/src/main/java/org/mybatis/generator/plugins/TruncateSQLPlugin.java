@@ -21,7 +21,7 @@ public class TruncateSQLPlugin extends PluginAdapter {
     method.setAbstract(true);
     method.setDefault(false);
     method.addAnnotation("@Delete(\"TRUNCATE TABLE %s\")".formatted(tableName));
-    method.setReturnType(PluginUtils.INT);
+    method.setReturnType(PluginUtils.INTEGER);
 
     interfaze.addMethod(method);
 

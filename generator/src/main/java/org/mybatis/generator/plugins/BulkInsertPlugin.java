@@ -28,7 +28,7 @@ public class BulkInsertPlugin extends PluginAdapter {
     method.addAnnotation(
         "@InsertProvider(type=%s.class, method=\"bulkInsert\")"
             .formatted(sqlProvider.getShortName()));
-    method.setReturnType(PluginUtils.INT);
+    method.setReturnType(PluginUtils.INTEGER);
 
     interfaze.addImportedType(PluginUtils.INSERT_PROVIDER);
     interfaze.addImportedType(PluginUtils.LIST);

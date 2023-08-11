@@ -35,6 +35,22 @@ public class SelectiveSQLPlugin extends PluginAdapter {
     }
 
     {
+      var method = new Method("countBy");
+      method.setDefault(false);
+      method.setAbstract(true);
+      method.addParameter(new Parameter(baseRecordType, "row"));
+      method.addAnnotation(
+          "@%s(type=%s.class, method=\"%s\")"
+              .formatted(
+                  PluginUtils.SELECT_PROVIDER.getShortName(),
+                  sqlProvider.getShortName(),
+                  "countBy"));
+      method.setReturnType(PluginUtils.INTEGER);
+
+      interfaze.addMethod(method);
+    }
+
+    {
       var method = new Method("deleteBy");
       method.setDefault(false);
       method.setAbstract(true);
@@ -45,7 +61,7 @@ public class SelectiveSQLPlugin extends PluginAdapter {
                   PluginUtils.DELETE_PROVIDER.getShortName(),
                   sqlProvider.getShortName(),
                   "deleteBy"));
-      method.setReturnType(PluginUtils.INT);
+      method.setReturnType(PluginUtils.INTEGER);
 
       interfaze.addMethod(method);
     }
@@ -77,6 +93,18 @@ public class SelectiveSQLPlugin extends PluginAdapter {
       method.addParameter(new Parameter(baseRecordType, "row"));
       method.setReturnType(PluginUtils.STRING);
       method.addBodyLine(PluginUtils.processTemplate("selectBy", templateParam));
+
+      topLevelClass.addMethod(method);
+    }
+
+    {
+      var method = new Method("countBy");
+      method.setDefault(false);
+      method.setAbstract(false);
+      method.setVisibility(JavaVisibility.PUBLIC);
+      method.addParameter(new Parameter(baseRecordType, "row"));
+      method.setReturnType(PluginUtils.STRING);
+      method.addBodyLine(PluginUtils.processTemplate("countBy", templateParam));
 
       topLevelClass.addMethod(method);
     }
