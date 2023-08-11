@@ -20,6 +20,7 @@
     <plugin type="org.mybatis.generator.plugins.TruncateSQLPlugin" />
     <plugin type="org.mybatis.generator.plugins.SelectAllPlugin" />
     <plugin type="org.mybatis.generator.plugins.BulkInsertPlugin" />
+    <plugin type="org.mybatis.generator.plugins.SpecificColumnSQLPlugin" />
     <commentGenerator>
       <property
         name="suppressDate"
