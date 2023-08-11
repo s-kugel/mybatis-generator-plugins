@@ -2,14 +2,14 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 buildscript {
     dependencies {
-        classpath('org.flywaydb:flyway-mysql:9.16.3')
+        classpath('org.flywaydb:flyway-mysql:9.21.1')
     }
 }
 
 plugins {
     id('java')
     id('com.diffplug.spotless').version('6.20.0')
-    id('org.flywaydb.flyway').version('9.16.3')
+    id('org.flywaydb.flyway').version('9.21.1')
     id('org.springframework.boot').version('3.1.2')
 }
 
@@ -20,7 +20,7 @@ configurations {
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web:3.1.2')
     implementation('org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2')
-    implementation('com.mysql:mysql-connector-j:8.0.32')
+    implementation('com.mysql:mysql-connector-j:8.1.0')
     implementation('de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0')
     compileOnly('org.projectlombok:lombok:1.18.28')
     annotationProcessor('org.projectlombok:lombok:1.18.28')
@@ -33,7 +33,7 @@ dependencies {
     testImplementation('com.github.database-rider:rider-junit5:1.36.0')
     testImplementation('com.github.database-rider:rider-spring:1.36.0')
 
-    mbGenerate('com.mysql:mysql-connector-j:8.0.32')
+    mbGenerate('com.mysql:mysql-connector-j:8.1.0')
     mbGenerate('org.mybatis.generator:mybatis-generator-core:1.4.2')
     mbGenerate(project(':generator'))
 }
