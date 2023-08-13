@@ -14,13 +14,13 @@
     <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
     <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin" />
     <!-- Custom Generator Plugins -->
-    <plugin type="org.mybatis.generator.plugins.LombokPlugin" />
-    <plugin type="org.mybatis.generator.plugins.SelectiveSQLPlugin" />
-    <plugin type="org.mybatis.generator.plugins.VersionColumnPlugin" />
-    <plugin type="org.mybatis.generator.plugins.TruncateSQLPlugin" />
-    <plugin type="org.mybatis.generator.plugins.SelectAllPlugin" />
-    <plugin type="org.mybatis.generator.plugins.BulkInsertPlugin" />
-    <plugin type="org.mybatis.generator.plugins.SpecificColumnSQLPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.LombokPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.SelectiveSQLPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.VersionColumnPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.TruncateSQLPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.SelectAllPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.BulkInsertPlugin" />
+    <plugin type="com.silber_kugel.mybatis.generator.plugins.SpecificColumnSQLPlugin" />
     <commentGenerator>
       <property
         name="suppressDate"
